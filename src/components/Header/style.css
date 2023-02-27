@@ -1,0 +1,24 @@
+.header {
+    background-color: #00657f;
+    margin-bottom: 20px;
+}
+
+.header__wrapper {
+    width: 95%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header__link, 
+.header__logo {
+    text-decoration: none;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.header__logo {
+    font-weight: 700;
+    font-size: 20px;
+}

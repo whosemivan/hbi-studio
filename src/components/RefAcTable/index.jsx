@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './style.css';
-import { Button, Input, Form, Table, InputNumber, message, Popconfirm, Typography } from 'antd';
+import { Button, Input, Form, Table, InputNumber, message, Popconfirm, Typography, Modal, DatePicker } from 'antd';
 import Api from '../../api';
-import { SearchOutlined, ReloadOutlined, CloseOutlined } from '@ant-design/icons';
+import { ReloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
 
 // приходят данные с сервера без уникальных полей, чтобы реализовать редактирование, пришлось добавить айдишки на фронте
@@ -56,6 +56,12 @@ const RefAcTable = () => {
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const isEditing = (record) => record.key === editingKey;
+
+
+    const [isPopup, setPopup] = useState(false);
+
+    const { RangePicker } = DatePicker;
+
 
     const edit = (record) => {
         form.setFieldsValue({
@@ -238,7 +244,6 @@ const RefAcTable = () => {
                         </Popconfirm>
                     </div>
 
-
                 );
             },
         },
@@ -275,8 +280,18 @@ const RefAcTable = () => {
                 icon={<ReloadOutlined />}
                 size="middle"
                 className='table-block__button'
+                style={{ marginRight: 10 }}
             >
                 Update audits
+            </Button>
+            <Button
+                type="primary"
+                onClick={() => setPopup(!isPopup)}
+                icon={<PlusCircleOutlined />}
+                size="middle"
+                className='table-block__button'
+            >
+                Add refAc
             </Button>
 
             <Form form={form} component={false}>
@@ -301,6 +316,43 @@ const RefAcTable = () => {
                     }}
                 />
             </Form>
+            <Modal title="Add the refAcc" open={isPopup} footer={null} closable={true} onCancel={() => setPopup(false)} >
+                <Form
+                    name="basic"
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                    style={{ maxWidth: 600, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 30 }}
+                    // onFinish={onFinish}
+                    // onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        label="BK_SourceMediumCode"
+                        name="BK_SourceMediumCode"
+                        rules={[{ required: true, message: 'Please input BK_SourceMediumCode!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Start date/end date" name="Start date/end dat" rules={[{ required: true, message: 'Please choose dates!' }]}>
+                        <RangePicker />
+                    </Form.Item>
+                    
+                    <Form.Item
+                        label="acRate"
+                        name="acRate"
+                        rules={[{ required: true, message: 'Please input acRate!' }]}
+                    >
+                        <InputNumber />
+                    </Form.Item>
+
+
+                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 }

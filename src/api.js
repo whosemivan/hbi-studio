@@ -8,6 +8,10 @@ class Api {
             audit_date: date
         }))
     }
+
+    getRefAc() {
+        return fetch(`${this.url}RefAc`)
+    }
 }
 
 export default Api;

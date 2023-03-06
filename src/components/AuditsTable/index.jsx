@@ -172,8 +172,6 @@ const AuditsTable = () => {
         fetchData();
     }, []);
 
-    console.log(filterValues);
-
     const columns = [
         {
             title: 'AuditDate',

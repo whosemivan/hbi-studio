@@ -4,8 +4,8 @@
     position: relative;
 }
 
-.table-block__table {
-    width: 765px;
+.table-refac__table {
+    width: 815px;
 }
 
 .table-block__button {
@@ -25,4 +25,15 @@
 
 .table-block__text {
     margin: 0;
+}
+
+
+.editable-row .ant-form-item-explain {
+    position: absolute;
+    top: 100%;
+    font-size: 12px;
+}
+
+.ant-table-tbody .ant-table-row:nth-child(2n) {
+    background-color: #f0f0f0;
 }

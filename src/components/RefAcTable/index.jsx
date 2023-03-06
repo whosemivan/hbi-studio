@@ -1,8 +1,49 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './style.css';
-import { Button, Input, Space, Table, Card, message, Tag } from 'antd';
+import { Button, Input, Form, Table, InputNumber, message, Popconfirm, Typography } from 'antd';
 import Api from '../../api';
 import { SearchOutlined, ReloadOutlined, CloseOutlined } from '@ant-design/icons';
+
+
+// приходят данные с сервера без уникальных полей, чтобы реализовать редактирование, пришлось добавить айдишки на фронте
+
+
+// editing
+const EditableCell = ({
+    editing,
+    dataIndex,
+    title,
+    inputType,
+    record,
+    index,
+    children,
+    ...restProps
+}) => {
+    const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+    return (
+        <td {...restProps}>
+            {editing ? (
+                <Form.Item
+                    name={dataIndex}
+                    style={{
+                        margin: 0,
+                    }}
+                    rules={[
+                        {
+                            required: true,
+                            message: `Please Input ${title}!`,
+                        },
+                    ]}
+                >
+                    {inputNode}
+                </Form.Item>
+            ) : (
+                children
+            )}
+        </td>
+    );
+};
+
 
 
 const RefAcTable = () => {
@@ -10,10 +51,58 @@ const RefAcTable = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
 
+    // edit state
+    const [form] = Form.useForm();
+    const [editingKey, setEditingKey] = useState('');
+    const isEditing = (record) => record.key === editingKey;
+
+    const edit = (record) => {
+        console.log(record);
+        form.setFieldsValue({
+            BK_SourceMediumCode: '',
+            startDate: '',
+            endDate: '',
+            acRate: '',
+            ...record,
+        });
+        setEditingKey(record.key);
+    };
+
+    const cancel = () => {
+        setEditingKey('');
+    };
+
+    // const save = async (key) => {
+    //     try {
+    //         const row = await form.validateFields();
+    //         const newData = [...data];
+    //         const index = newData.findIndex((item) => key === item.key);
+    //         if (index > -1) {
+    //             const item = newData[index];
+    //             newData.splice(index, 1, {
+    //                 ...item,
+    //                 ...row,
+    //             });
+    //             setData(newData);
+    //             setEditingKey('');
+    //         } else {
+    //             newData.push(row);
+    //             setData(newData);
+    //             setEditingKey('');
+    //         }
+    //     } catch (errInfo) {
+    //         console.log('Validate Failed:', errInfo);
+    //     }
+    // };
+
+    const save = () => {
+        console.log('request save');
+    };
+
 
     // data messages
     const [messageApi, contextHolder] = message.useMessage();
-    
+
     const success = () => {
         messageApi.open({
             type: 'success',
@@ -37,7 +126,13 @@ const RefAcTable = () => {
             .then((data) => {
                 console.log(data);
                 if (data) {
+                    data.map((item) => {
+                        item.key = Math.floor((1 + Math.random()) * 0x10000)
+                            .toString(16)
+                            .substring(1);
+                    })
                     setData(data);
+
                     setLoading(false);
                     success();
                 } else {
@@ -50,11 +145,13 @@ const RefAcTable = () => {
         fetchData();
     }, []);
 
+
     const columns = [
         {
             title: 'BK_SourceMediumCode',
             dataIndex: 'BK_SourceMediumCode',
-            key: 'BK_SourceMediumCode'
+            key: 'BK_SourceMediumCode',
+            editable: true,
         },
         {
             title: 'startDate',
@@ -63,6 +160,7 @@ const RefAcTable = () => {
             sorter: (a, b) => {
                 return new Date(a.startDate) - new Date(b.startDate)
             },
+            editable: true,
         },
         {
             title: 'endDate',
@@ -71,18 +169,72 @@ const RefAcTable = () => {
             sorter: (a, b) => {
                 return new Date(a.endDate) - new Date(b.endDate)
             },
+            editable: true,
         },
         {
             title: 'acRate',
             dataIndex: 'acRate',
             key: 'acRate',
-            sorter: (a, b) => a.acRate - b.acRate
+            sorter: (a, b) => a.acRate - b.acRate,
+            editable: true,
+        },
+        {
+            title: 'operation',
+            dataIndex: 'operation',
+            render: (_, record) => {
+                const editable = isEditing(record);
+                return editable ? (
+                    <span>
+                        <Typography.Link
+                            onClick={() => save(record.key)}
+                            style={{
+                                marginRight: 8,
+                                color: '#000000',
+                                textDecoration: 'underline'
+                            }}
+                        >
+                            Save
+                        </Typography.Link>
+                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                            <a style={{
+                                color: '#000000',
+                                textDecoration: 'underline'
+                            }}>Cancel</a>
+                        </Popconfirm>
+                    </span>
+                ) : (
+                    <Typography.Link style={{
+                        color: '#000000',
+                        textDecoration: 'underline'
+                    }} disabled={editingKey !== ''} onClick={() => edit(record)}>
+                        Edit
+                    </Typography.Link>
+                );
+            },
         },
     ];
 
+
+    const mergedColumns = columns.map((col) => {
+        if (!col.editable) {
+            return col;
+        }
+        return {
+            ...col,
+            onCell: (record) => ({
+                record,
+                inputType: col.dataIndex === 'acRate' ? 'number' : 'text',
+                dataIndex: col.dataIndex,
+                title: col.title,
+                editing: isEditing(record),
+            }),
+        };
+    });
+
     const onChange = (pagination, filters, sorter, extra) => {
         console.log('params', pagination, filters, sorter, extra);
-      };
+    };
+
 
     return (
         <div className='table-block'>
@@ -96,7 +248,29 @@ const RefAcTable = () => {
             >
                 Update audits
             </Button>
-            <Table onChange={onChange} bordered={true} loading={loading} className='table-block__table' dataSource={data} columns={columns} size="small" />
+
+            <Form form={form} component={false}>
+                <Table
+                    components={{
+                        body: {
+                            cell: EditableCell,
+                        },
+                    }}
+                    bordered
+                    dataSource={data}
+                    columns={mergedColumns}
+                    rowClassName="table-block__table editable-row"
+                    loading={loading}
+                    onChange={onChange}
+                    size="small"
+                    className='table-refac__table'
+                    rowKey={() => {
+                        return Math.floor((1 + Math.random()) * 0x10000)
+                            .toString(16)
+                            .substring(1);
+                    }}
+                />
+            </Form>
         </div>
     );
 }

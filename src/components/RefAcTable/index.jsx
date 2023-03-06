@@ -7,6 +7,7 @@ import { SearchOutlined, ReloadOutlined, CloseOutlined } from '@ant-design/icons
 
 // приходят данные с сервера без уникальных полей, чтобы реализовать редактирование, пришлось добавить айдишки на фронте
 
+// при изменении одного поля - BK_SourceMediumCode создается новый ряд в таблице, при изменении acRate все отрабатывает корректно
 
 // editing
 const EditableCell = ({
@@ -57,7 +58,6 @@ const RefAcTable = () => {
     const isEditing = (record) => record.key === editingKey;
 
     const edit = (record) => {
-        console.log(record);
         form.setFieldsValue({
             BK_SourceMediumCode: '',
             startDate: '',
@@ -72,31 +72,50 @@ const RefAcTable = () => {
         setEditingKey('');
     };
 
-    // const save = async (key) => {
-    //     try {
-    //         const row = await form.validateFields();
-    //         const newData = [...data];
-    //         const index = newData.findIndex((item) => key === item.key);
-    //         if (index > -1) {
-    //             const item = newData[index];
-    //             newData.splice(index, 1, {
-    //                 ...item,
-    //                 ...row,
-    //             });
-    //             setData(newData);
-    //             setEditingKey('');
-    //         } else {
-    //             newData.push(row);
-    //             setData(newData);
-    //             setEditingKey('');
-    //         }
-    //     } catch (errInfo) {
-    //         console.log('Validate Failed:', errInfo);
-    //     }
-    // };
+    // save editing changes
+    const save = async (key) => {
+        try {
+            const row = await form.validateFields();
+            const newData = [...data];
+            const index = newData.findIndex((item) => key === item.key);
+            if (index > -1) {
+                const item = newData[index];
+                newData.splice(index, 1, {
+                    ...item,
+                    ...row,
+                });
 
-    const save = () => {
-        console.log('request save');
+
+                api.createRefAc({ BK_SourceMediumCode: newData[index].BK_SourceMediumCode, startDate: newData[index].startDate, endDate: newData[index].endDate, acRate: newData[index].acRate }).then(res => res.json()).then(data => {
+                    console.log(data);
+                })
+
+                setData(newData);
+                console.log(newData[index]);
+
+
+                setEditingKey('');
+            } else {
+                newData.push(row);
+
+                setData(newData);
+                setEditingKey('');
+            }
+        } catch (errInfo) {
+            console.log('Validate Failed:', errInfo);
+        }
+    };
+
+    // delete item
+    const handleDelete = (key) => {
+        const newData = data.filter((item) => item.key !== key);
+        setData(newData);
+
+        data.forEach((item) => {
+            item.key === key && api.deleteRefAc({ BK_SourceMediumCode: item.BK_SourceMediumCode, startDate: item.startDate, endDate: item.endDate }).then(res => res.json()).then(data => {
+                console.log(data);
+            })
+        })
     };
 
 
@@ -203,12 +222,23 @@ const RefAcTable = () => {
                         </Popconfirm>
                     </span>
                 ) : (
-                    <Typography.Link style={{
-                        color: '#000000',
-                        textDecoration: 'underline'
-                    }} disabled={editingKey !== ''} onClick={() => edit(record)}>
-                        Edit
-                    </Typography.Link>
+                    <div>
+                        <Typography.Link style={{
+                            color: '#000000',
+                            textDecoration: 'underline',
+                            marginRight: 8
+                        }} disabled={editingKey !== ''} onClick={() => edit(record)}>
+                            Edit
+                        </Typography.Link>
+                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                            <a style={{
+                                color: '#000000',
+                                textDecoration: 'underline'
+                            }} >Delete</a>
+                        </Popconfirm>
+                    </div>
+
+
                 );
             },
         },

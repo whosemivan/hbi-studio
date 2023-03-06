@@ -12,6 +12,28 @@ class Api {
     getRefAc() {
         return fetch(`${this.url}RefAc`)
     }
+
+    createRefAc(body) {
+        return fetch(`${this.url}RefAc`, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+    }
+
+    deleteRefAc(body) {
+        return fetch(`${this.url}RefAc_del`, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+    }
 }
 
 export default Api;

@@ -4,7 +4,6 @@ import { Button, Input, Space, Table, Card, message, Tag } from 'antd';
 import Api from '../../api';
 import { SearchOutlined, ReloadOutlined, CloseOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import { unique } from '../../utils';
 
 const AuditsTable = () => {
     const [loading, setLoading] = useState(false);

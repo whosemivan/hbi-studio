@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './style.css';
-import { Button, Input, Form, Table, InputNumber, message, Popconfirm, Typography, Modal, DatePicker } from 'antd';
+import { Button, Input, Form, Table, InputNumber, message, Popconfirm, Typography, Modal, DatePicker, AutoComplete } from 'antd';
 import Api from '../../api';
 import { ReloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
@@ -54,8 +54,18 @@ const RefAcTable = () => {
 
     // edit state
     const [form] = Form.useForm();
-    const [editingKey, setEditingKey] = useState('');
-    const isEditing = (record) => record.key === editingKey;
+    const formRef = useRef(null);
+    const [componentDisabled, setComponentDisabled] = useState(false);
+
+
+    const [editingId, setEditingId] = useState('');
+    const isEditing = (record) => record.id === editingId;
+
+    // fiilters and form autocomplete component data
+    let filters = [];
+    let selectValues = [];
+    const [filterValues, setFilterValue] = useState([]);
+    const [formSelectValues, setFormSelectValues] = useState([]);
 
 
     const [isPopup, setPopup] = useState(false);
@@ -71,19 +81,19 @@ const RefAcTable = () => {
             acRate: '',
             ...record,
         });
-        setEditingKey(record.key);
+        setEditingId(record.id);
     };
 
     const cancel = () => {
-        setEditingKey('');
+        setEditingId('');
     };
 
     // save editing changes
-    const save = async (key) => {
+    const save = async (id) => {
         try {
             const row = await form.validateFields();
             const newData = [...data];
-            const index = newData.findIndex((item) => key === item.key);
+            const index = newData.findIndex((item) => id === item.id);
             if (index > -1) {
                 const item = newData[index];
                 newData.splice(index, 1, {
@@ -91,21 +101,17 @@ const RefAcTable = () => {
                     ...row,
                 });
 
-
-                api.createRefAc({ BK_SourceMediumCode: newData[index].BK_SourceMediumCode, startDate: newData[index].startDate, endDate: newData[index].endDate, acRate: newData[index].acRate }).then(res => res.json()).then(data => {
+                api.editRefAc({ id: newData[index].id, BK_SourceMediumCode: newData[index].BK_SourceMediumCode, startDate: newData[index].startDate, endDate: newData[index].endDate, acRate: newData[index].acRate }).then(res => res.json()).then(data => {
                     console.log(data);
                 })
 
                 setData(newData);
-                console.log(newData[index]);
-
-
-                setEditingKey('');
+                setEditingId('');
             } else {
                 newData.push(row);
 
                 setData(newData);
-                setEditingKey('');
+                setEditingId('');
             }
         } catch (errInfo) {
             console.log('Validate Failed:', errInfo);
@@ -113,12 +119,12 @@ const RefAcTable = () => {
     };
 
     // delete item
-    const handleDelete = (key) => {
-        const newData = data.filter((item) => item.key !== key);
+    const handleDelete = (id) => {
+        const newData = data.filter((item) => item.id !== id);
         setData(newData);
 
         data.forEach((item) => {
-            item.key === key && api.deleteRefAc({ BK_SourceMediumCode: item.BK_SourceMediumCode, startDate: item.startDate, endDate: item.endDate }).then(res => res.json()).then(data => {
+            item.id === id && api.deleteRefAc({ id: item.id }).then(res => res.json()).then(data => {
                 console.log(data);
             })
         })
@@ -149,14 +155,28 @@ const RefAcTable = () => {
         api.getRefAc()
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
                 if (data) {
-                    data.map((item) => {
-                        item.key = Math.floor((1 + Math.random()) * 0x10000)
-                            .toString(16)
-                            .substring(1);
-                    })
                     setData(data);
+
+                    let arr = [];
+                    data.forEach((refAc) => {
+                        arr.push(refAc.BK_SourceMediumCode);
+                    });
+                    const unique = arr.filter((value, index, array) => array.indexOf(value) === index);
+
+                    unique.forEach((el) => {
+                        selectValues.push({
+                            value: el
+                        });
+                    })
+                    unique.forEach((el) => {
+                        filters.push({
+                            text: el,
+                            value: el
+                        });
+                    })
+                    setFilterValue(filters)
+                    setFormSelectValues(filters);
 
                     setLoading(false);
                     success();
@@ -177,6 +197,9 @@ const RefAcTable = () => {
             dataIndex: 'BK_SourceMediumCode',
             key: 'BK_SourceMediumCode',
             editable: true,
+            filters: filterValues,
+            onFilter: (value, record) => record.BK_SourceMediumCode.indexOf(value) === 0,
+            filterSearch: true,
         },
         {
             title: 'startDate',
@@ -211,7 +234,7 @@ const RefAcTable = () => {
                 return editable ? (
                     <span>
                         <Typography.Link
-                            onClick={() => save(record.key)}
+                            onClick={() => save(record.id)}
                             style={{
                                 marginRight: 8,
                                 color: '#000000',
@@ -233,10 +256,10 @@ const RefAcTable = () => {
                             color: '#000000',
                             textDecoration: 'underline',
                             marginRight: 8
-                        }} disabled={editingKey !== ''} onClick={() => edit(record)}>
+                        }} disabled={editingId !== ''} onClick={() => edit(record)}>
                             Edit
                         </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
                             <a style={{
                                 color: '#000000',
                                 textDecoration: 'underline'
@@ -271,6 +294,23 @@ const RefAcTable = () => {
     };
 
 
+    // create item
+    const onFinish = (values) => {
+        console.log(values);
+        const startDate = `${values.dates[0].$y}-${values.dates[0].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[0].$d.getMonth() + 1}-${values.dates[0].$D} ${values.dates[0].$H}:${values.dates[0].$m}:${values.dates[0].$s}`;
+        const endDate = `${values.dates[1].$y}-${values.dates[1].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[1].$d.getMonth() + 1}-${values.dates[1].$D} ${values.dates[1].$H}:${values.dates[1].$m}:${values.dates[1].$s}`;
+        setComponentDisabled(true);
+        api.createRefAc({ BK_SourceMediumCode: values.BK_SourceMediumCode, startDate: startDate, endDate: endDate, acRate: values.acRate }).then(res => res.json()).then(data => {
+            console.log(data);
+            if (data === 1) {
+                setPopup(false);
+                fetchData();
+                formRef.current?.resetFields();
+                setComponentDisabled(false);
+            }
+        })
+    };
+
     return (
         <div className='table-block'>
             {contextHolder}
@@ -282,11 +322,13 @@ const RefAcTable = () => {
                 className='table-block__button'
                 style={{ marginRight: 10 }}
             >
-                Update audits
+                Update
             </Button>
             <Button
                 type="primary"
-                onClick={() => setPopup(!isPopup)}
+                onClick={() => {
+                    setPopup(!isPopup);
+                }}
                 icon={<PlusCircleOutlined />}
                 size="middle"
                 className='table-block__button'
@@ -321,32 +363,47 @@ const RefAcTable = () => {
                     name="basic"
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
-                    style={{ maxWidth: 600, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 30 }}
-                    // onFinish={onFinish}
-                    // onFinishFailed={onFinishFailed}
                     autoComplete="off"
+                    onFinish={onFinish}
+                    ref={formRef}
+                    disabled={componentDisabled}
                 >
                     <Form.Item
                         label="BK_SourceMediumCode"
+                        labelAlign='left'
+                        labelCol={{ span: 10, offset: 0 }}
                         name="BK_SourceMediumCode"
-                        rules={[{ required: true, message: 'Please input BK_SourceMediumCode!' }]}
+                        rules={[{ required: true, message: 'BK_SourceMediumCode!' }]}
+                        style={{ display: 'flex', flexDirection: 'row' }}
                     >
-                        <Input />
+                        <AutoComplete
+                            placeholder="BK_SourceMediumCode"
+                            options={formSelectValues}
+                            style={{ width: 250 }}
+                        />
                     </Form.Item>
-                    <Form.Item label="Start date/end date" name="Start date/end dat" rules={[{ required: true, message: 'Please choose dates!' }]}>
-                        <RangePicker />
+                    <Form.Item label="Start date/end dat" labelCol={{ span: 7, offset: 0 }} labelAlign='left' name="dates" rules={[{ required: true, message: 'Please choose dates!' }]}>
+                        <RangePicker
+                            showTime={{
+                                format: 'HH:mm',
+                            }}
+                            format="YYYY-MM-DD HH:mm"
+                            onChange={onChange}
+                        />
                     </Form.Item>
-                    
+
                     <Form.Item
                         label="acRate"
+                        labelAlign='left'
+                        labelCol={{ span: 4, offset: 0 }}
                         name="acRate"
                         rules={[{ required: true, message: 'Please input acRate!' }]}
                     >
-                        <InputNumber />
+                        <InputNumber placeholder="acRate" />
                     </Form.Item>
 
 
-                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                    <Form.Item wrapperCol={{ offset: 0, span: 12 }}>
                         <Button type="primary" htmlType="submit">
                             Submit
                         </Button>

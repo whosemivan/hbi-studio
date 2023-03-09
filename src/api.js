@@ -13,6 +13,10 @@ class Api {
         return fetch(`${this.url}RefAc`)
     }
 
+    getRefVat() {
+        return fetch(`${this.url}RefVat`)
+    }
+
     createRefAc(body) {
         return fetch(`${this.url}RefAc_ins`, {
             method: "POST",
@@ -37,6 +41,17 @@ class Api {
 
     deleteRefAc(body) {
         return fetch(`${this.url}RefAc_del`, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+    }
+
+    deleteRefVat(body) {
+        return fetch(`${this.url}RefVat_del`, {
             method: "POST",
             headers: {
                 "Accept": "application/json",

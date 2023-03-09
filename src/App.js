@@ -5,6 +5,7 @@ import browserHistory from "./browser-history";
 import Header from './components/Header';
 import AuditsTable from './components/AuditsTable';
 import RefAcTable from './components/RefAcTable';
+import RefVatTable from './components/RefVatTable';
 import NotFound from './components/NotFound';
 
 function App() {
@@ -19,6 +20,10 @@ function App() {
           <Route exact path='/refAc'>
             <Header />
             <RefAcTable />
+          </Route>
+          <Route exact path='/refVat'>
+            <Header />
+            <RefVatTable />
           </Route>
           <Route>
             <NotFound />

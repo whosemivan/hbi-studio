@@ -8,7 +8,7 @@ import { ReloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
 // приходят данные с сервера без уникальных полей, чтобы реализовать редактирование, пришлось добавить айдишки на фронте
 
 // при изменении одного поля - BK_SourceMediumCode создается новый ряд в таблице, при изменении acRate все отрабатывает корректно
-
+console.log('test');
 // editing
 const EditableCell = ({
     editing,

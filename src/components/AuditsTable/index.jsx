@@ -10,7 +10,7 @@ const AuditsTable = () => {
     const [data, setData] = useState([]);
     const [auditInfo, setAuditInfo] = useState({});
     const [isPopup, setPopup] = useState(false);
-    
+
 
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -174,13 +174,13 @@ const AuditsTable = () => {
     const columns = [
         {
             title: 'AuditDate',
-            dataIndex: 'AuditDate',
-            key: 'AuditDate',
+            dataIndex: 'auditdate',
+            key: 'auditdate',
             sorter: (a, b) => {
-                return new Date(a.AuditDate) - new Date(b.AuditDate)
+                return new Date(a.auditdate) - new Date(b.auditdate)
             },
-            render: (_, { AuditDate }) => (
-                AuditDate.slice(0, 16)
+            render: (_, { auditdate }) => (
+                auditdate.slice(0, 16)
             )
         },
         {
@@ -192,34 +192,34 @@ const AuditsTable = () => {
         },
         {
             title: 'TableName',
-            dataIndex: 'TableName',
-            key: 'TableName',
-            ...getColumnSearchProps('TableName'),
-            render: (_, { TableName }) => (
-                TableName.slice(0, 16) + '...'
+            dataIndex: 'tablename',
+            key: 'tablename',
+            ...getColumnSearchProps('tablename'),
+            render: (_, { tablename }) => (
+                tablename.slice(0, 16) + '...'
             )
         },
         {
             title: 'Source',
-            dataIndex: 'SourceRows',
-            key: 'SourceRows',
-            sorter: (a, b) => a.SourceRows - b.SourceRows
+            dataIndex: 'sourcerows',
+            key: 'sourcerows',
+            sorter: (a, b) => a.sourcerows - b.sourcerows
         },
         {
             title: 'DWH',
-            dataIndex: 'DWHRows',
-            key: 'DWHRows',
-            sorter: (a, b) => a.DWHRows - b.DWHRows
+            dataIndex: 'dwhrows',
+            key: 'dwhrows',
+            sorter: (a, b) => a.dwhrows - b.dwhrows
         },
         {
             title: 'Diff',
-            dataIndex: 'DiffRows',
-            key: 'DiffRows',
-            sorter: (a, b) => a.DiffRows - b.DiffRows,
-            render: (_, { DiffRows }) => (
+            dataIndex: 'diffrows',
+            key: 'diffrows',
+            sorter: (a, b) => a.diffrows - b.diffrows,
+            render: (_, { diffrows }) => (
                 <>
                     {
-                        DiffRows === 0 ? (
+                        diffrows === 0 ? (
                             <Tag color={'green'}>
                                 Success
                             </Tag>
@@ -234,15 +234,15 @@ const AuditsTable = () => {
         },
         {
             title: 'Cnt',
-            dataIndex: 'SameResultDaysCnt',
-            key: 'SameResultDaysCnt',
-            sorter: (a, b) => a.SameResultDaysCnt - b.SameResultDaysCnt
+            dataIndex: 'sameresultdayscnt',
+            key: 'sameresultdayscnt',
+            sorter: (a, b) => a.sameresultdayscnt - b.sameresultdayscnt
         },
     ];
 
     const onChange = (pagination, filters, sorter, extra) => {
         console.log('params', pagination, filters, sorter, extra);
-      };
+    };
 
     return (
         <div className='table-block'>
@@ -263,6 +263,10 @@ const AuditsTable = () => {
                         setPopup(true);
                     },
                 };
+            }} rowKey={() => {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
             }} />
 
             {isPopup && (

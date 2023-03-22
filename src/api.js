@@ -28,8 +28,30 @@ class Api {
         })
     }
 
+    createRefVat(body) {
+        return fetch(`${this.url}RefVat_ins`, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+    }
+
     editRefAc(body) {
         return fetch(`${this.url}RefAc_upd`, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+    }
+
+    editRefVat(body) {
+        return fetch(`${this.url}RefVat_upd`, {
             method: "POST",
             headers: {
                 "Accept": "application/json",

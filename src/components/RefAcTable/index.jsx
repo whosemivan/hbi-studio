@@ -5,10 +5,6 @@ import Api from '../../api';
 import { ReloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
 
-// приходят данные с сервера без уникальных полей, чтобы реализовать редактирование, пришлось добавить айдишки на фронте
-
-// при изменении одного поля - BK_SourceMediumCode создается новый ряд в таблице, при изменении acRate все отрабатывает корректно
-
 // editing
 const EditableCell = ({
     editing,
@@ -75,10 +71,10 @@ const RefAcTable = () => {
 
     const edit = (record) => {
         form.setFieldsValue({
-            BK_SourceMediumCode: '',
-            startDate: '',
-            endDate: '',
-            acRate: '',
+            bk_sourcemediumcode: '',
+            startdate: '',
+            enddate: '',
+            acrate: '',
             ...record,
         });
         setEditingId(record.id);
@@ -101,7 +97,7 @@ const RefAcTable = () => {
                     ...row,
                 });
 
-                api.editRefAc({ id: newData[index].id, BK_SourceMediumCode: newData[index].BK_SourceMediumCode, startDate: newData[index].startDate, endDate: newData[index].endDate, acRate: newData[index].acRate }).then(res => res.json()).then(data => {
+                api.editRefAc({ id: newData[index].id, bk_sourcemediumcode: newData[index].bk_sourcemediumcode, startdate: newData[index].startdate, enddate: newData[index].enddate, acrate: newData[index].acrate }).then(res => res.json()).then(data => {
                     console.log(data);
                 })
 
@@ -160,7 +156,7 @@ const RefAcTable = () => {
 
                     let arr = [];
                     data.forEach((refAc) => {
-                        arr.push(refAc.BK_SourceMediumCode);
+                        arr.push(refAc.bk_sourcemediumcode);
                     });
                     const unique = arr.filter((value, index, array) => array.indexOf(value) === index);
 
@@ -194,36 +190,36 @@ const RefAcTable = () => {
     const columns = [
         {
             title: 'BK_SourceMediumCode',
-            dataIndex: 'BK_SourceMediumCode',
-            key: 'BK_SourceMediumCode',
+            dataIndex: 'bk_sourcemediumcode',
+            key: 'bk_sourcemediumcode',
             editable: true,
             filters: filterValues,
-            onFilter: (value, record) => record.BK_SourceMediumCode.indexOf(value) === 0,
+            onFilter: (value, record) => record.bk_sourcemediumcode.indexOf(value) === 0,
             filterSearch: true,
         },
         {
             title: 'startDate',
-            dataIndex: 'startDate',
-            key: 'startDate',
+            dataIndex: 'startdate',
+            key: 'startdate',
             sorter: (a, b) => {
-                return new Date(a.startDate) - new Date(b.startDate)
+                return new Date(a.startdate) - new Date(b.startdate)
             },
             editable: true,
         },
         {
             title: 'endDate',
-            dataIndex: 'endDate',
-            key: 'endDate',
+            dataIndex: 'enddate',
+            key: 'enddate',
             sorter: (a, b) => {
-                return new Date(a.endDate) - new Date(b.endDate)
+                return new Date(a.enddate) - new Date(b.enddate)
             },
             editable: true,
         },
         {
             title: 'acRate',
-            dataIndex: 'acRate',
-            key: 'acRate',
-            sorter: (a, b) => a.acRate - b.acRate,
+            dataIndex: 'acrate',
+            key: 'acrate',
+            sorter: (a, b) => a.acrate - b.acrate,
             editable: true,
         },
         {
@@ -297,10 +293,10 @@ const RefAcTable = () => {
     // create item
     const onFinish = (values) => {
         console.log(values);
-        const startDate = `${values.dates[0].$y}-${values.dates[0].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[0].$d.getMonth() + 1}-${values.dates[0].$D} ${values.dates[0].$H}:${values.dates[0].$m}:${values.dates[0].$s}`;
-        const endDate = `${values.dates[1].$y}-${values.dates[1].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[1].$d.getMonth() + 1}-${values.dates[1].$D} ${values.dates[1].$H}:${values.dates[1].$m}:${values.dates[1].$s}`;
+        const startdate = `${values.dates[0].$y}-${values.dates[0].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[0].$d.getMonth() + 1}-${values.dates[0].$D} ${values.dates[0].$H}:${values.dates[0].$m}:${values.dates[0].$s}`;
+        const enddate = `${values.dates[1].$y}-${values.dates[1].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[1].$d.getMonth() + 1}-${values.dates[1].$D} ${values.dates[1].$H}:${values.dates[1].$m}:${values.dates[1].$s}`;
         setComponentDisabled(true);
-        api.createRefAc({ BK_SourceMediumCode: values.BK_SourceMediumCode, startDate: startDate, endDate: endDate, acRate: values.acRate }).then(res => res.json()).then(data => {
+        api.createRefAc({ bk_sourcemediumcode: values.bk_sourcemediumcode, startdate: startdate, enddate: enddate, acrate: values.acrate }).then(res => res.json()).then(data => {
             console.log(data);
             if (data === 1) {
                 setPopup(false);
@@ -372,7 +368,7 @@ const RefAcTable = () => {
                         label="BK_SourceMediumCode"
                         labelAlign='left'
                         labelCol={{ span: 10, offset: 0 }}
-                        name="BK_SourceMediumCode"
+                        name="bk_sourcemediumcode"
                         rules={[{ required: true, message: 'BK_SourceMediumCode!' }]}
                         style={{ display: 'flex', flexDirection: 'row' }}
                     >
@@ -396,7 +392,7 @@ const RefAcTable = () => {
                         label="acRate"
                         labelAlign='left'
                         labelCol={{ span: 4, offset: 0 }}
-                        name="acRate"
+                        name="acrate"
                         rules={[{ required: true, message: 'Please input acRate!' }]}
                     >
                         <InputNumber placeholder="acRate" />

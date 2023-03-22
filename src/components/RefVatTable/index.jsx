@@ -4,11 +4,6 @@ import { Button, Input, Form, Table, InputNumber, message, Popconfirm, Typograph
 import Api from '../../api';
 import { ReloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
-
-// приходят данные с сервера без уникальных полей, чтобы реализовать редактирование, пришлось добавить айдишки на фронте
-
-// при изменении одного поля - BK_SourceMediumCode создается новый ряд в таблице, при изменении acRate все отрабатывает корректно
-console.log('test');
 // editing
 const EditableCell = ({
     editing,
@@ -70,9 +65,9 @@ const RefVatTable = () => {
 
     const edit = (record) => {
         form.setFieldsValue({
-            startDate: '',
-            endDate: '',
-            vatRate: '',
+            startdate: '',
+            enddate: '',
+            vatdate: '',
             ...record,
         });
         setEditingId(record.id);
@@ -84,33 +79,32 @@ const RefVatTable = () => {
 
     // save editing changes
     const save = async (id) => {
-        alert('test save');
-        // try {
-        //     const row = await form.validateFields();
-        //     const newData = [...data];
-        //     const index = newData.findIndex((item) => id === item.id);
-        //     if (index > -1) {
-        //         const item = newData[index];
-        //         newData.splice(index, 1, {
-        //             ...item,
-        //             ...row,
-        //         });
+        try {
+            const row = await form.validateFields();
+            const newData = [...data];
+            const index = newData.findIndex((item) => id === item.id);
+            if (index > -1) {
+                const item = newData[index];
+                newData.splice(index, 1, {
+                    ...item,
+                    ...row,
+                });
 
-        //         api.editRefAc({ id: newData[index].id, BK_SourceMediumCode: newData[index].BK_SourceMediumCode, startDate: newData[index].startDate, endDate: newData[index].endDate, acRate: newData[index].acRate }).then(res => res.json()).then(data => {
-        //             console.log(data);
-        //         })
+                api.editRefVat({ id: newData[index].id, startdate: newData[index].startdate, enddate: newData[index].enddate, vatrate: newData[index].vatrate }).then(res => res.json()).then(data => {
+                    console.log(data);
+                })
 
-        //         setData(newData);
-        //         setEditingId('');
-        //     } else {
-        //         newData.push(row);
+                setData(newData);
+                setEditingId('');
+            } else {
+                newData.push(row);
 
-        //         setData(newData);
-        //         setEditingId('');
-        //     }
-        // } catch (errInfo) {
-        //     console.log('Validate Failed:', errInfo);
-        // }
+                setData(newData);
+                setEditingId('');
+            }
+        } catch (errInfo) {
+            console.log('Validate Failed:', errInfo);
+        }
     };
 
     // delete item
@@ -132,7 +126,7 @@ const RefVatTable = () => {
     const success = () => {
         messageApi.open({
             type: 'success',
-            content: 'RefAc updated',
+            content: 'RefVat updated',
         });
     };
     const error = () => {
@@ -169,27 +163,27 @@ const RefVatTable = () => {
 
         {
             title: 'startDate',
-            dataIndex: 'startDate',
-            key: 'startDate',
+            dataIndex: 'startdate',
+            key: 'startdate',
             sorter: (a, b) => {
-                return new Date(a.startDate) - new Date(b.startDate)
+                return new Date(a.startdate) - new Date(b.startdate)
             },
             editable: true,
         },
         {
             title: 'endDate',
-            dataIndex: 'endDate',
-            key: 'endDate',
+            dataIndex: 'enddate',
+            key: 'enddate',
             sorter: (a, b) => {
-                return new Date(a.endDate) - new Date(b.endDate)
+                return new Date(a.enddate) - new Date(b.enddate)
             },
             editable: true,
         },
         {
             title: 'vatRate',
-            dataIndex: 'vatRate',
-            key: 'vatRate',
-            sorter: (a, b) => a.vatRate - b.vatRate,
+            dataIndex: 'vatrate',
+            key: 'vatrate',
+            sorter: (a, b) => a.vatrate - b.vatrate,
             editable: true,
         },
         {
@@ -263,10 +257,10 @@ const RefVatTable = () => {
     // create item
     const onFinish = (values) => {
         console.log(values);
-        const startDate = `${values.dates[0].$y}-${values.dates[0].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[0].$d.getMonth() + 1}-${values.dates[0].$D} ${values.dates[0].$H}:${values.dates[0].$m}:${values.dates[0].$s}`;
-        const endDate = `${values.dates[1].$y}-${values.dates[1].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[1].$d.getMonth() + 1}-${values.dates[1].$D} ${values.dates[1].$H}:${values.dates[1].$m}:${values.dates[1].$s}`;
+        const startdate = `${values.dates[0].$y}-${values.dates[0].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[0].$d.getMonth() + 1}-${values.dates[0].$D} ${values.dates[0].$H}:${values.dates[0].$m}:${values.dates[0].$s}`;
+        const enddate = `${values.dates[1].$y}-${values.dates[1].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[1].$d.getMonth() + 1}-${values.dates[1].$D} ${values.dates[1].$H}:${values.dates[1].$m}:${values.dates[1].$s}`;
         setComponentDisabled(true);
-        api.createRefAc({ BK_SourceMediumCode: values.BK_SourceMediumCode, startDate: startDate, endDate: endDate, acRate: values.acRate }).then(res => res.json()).then(data => {
+        api.createRefVat({ startdate: startdate, enddate: enddate, vatrate: values.vatrate }).then(res => res.json()).then(data => {
             console.log(data);
             if (data === 1) {
                 setPopup(false);
@@ -324,7 +318,7 @@ const RefVatTable = () => {
                     }}
                 />
             </Form>
-            <Modal title="Add the refAcc" open={isPopup} footer={null} closable={true} onCancel={() => setPopup(false)} >
+            <Modal title="Add the refVat" open={isPopup} footer={null} closable={true} onCancel={() => setPopup(false)} >
                 <Form
                     name="basic"
                     labelCol={{ span: 8 }}
@@ -345,13 +339,13 @@ const RefVatTable = () => {
                     </Form.Item>
 
                     <Form.Item
-                        label="acRate"
+                        label="vatRate"
                         labelAlign='left'
                         labelCol={{ span: 4, offset: 0 }}
-                        name="acRate"
-                        rules={[{ required: true, message: 'Please input acRate!' }]}
+                        name="vatrate"
+                        rules={[{ required: true, message: 'Please input vatRate!' }]}
                     >
-                        <InputNumber placeholder="acRate" />
+                        <InputNumber placeholder="vatRate" />
                     </Form.Item>
 
 

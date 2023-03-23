@@ -1,0 +1,39 @@
+.table-block {
+    width: 95%;
+    margin: 0 auto;
+    position: relative;
+}
+
+.table-refac__table {
+    width: 815px;
+}
+
+.table-block__button {
+    margin-bottom: 20px;
+}
+
+.table-block__close-btn {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    font-size: 18px;
+}
+
+.table-block__text {
+    margin: 0;
+}
+
+
+.editable-row .ant-form-item-explain {
+    position: absolute;
+    top: 100%;
+    font-size: 12px;
+}
+
+.ant-table-tbody .ant-table-row:nth-child(2n) {
+    background-color: #f0f0f0;
+}

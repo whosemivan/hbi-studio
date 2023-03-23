@@ -42,7 +42,7 @@ const EditableCell = ({
 
 
 
-const RefVatTable = () => {
+const RefVatArmTable = () => {
     // state of requests
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
@@ -90,7 +90,7 @@ const RefVatTable = () => {
                     ...row,
                 });
 
-                api.editRefVat({ id: newData[index].id, startdate: newData[index].startdate, enddate: newData[index].enddate, vatrate: newData[index].vatrate }).then(res => res.json()).then(data => {
+                api.editRefVatArm({ id: newData[index].id, startdate: newData[index].startdate, enddate: newData[index].enddate, vatrate: newData[index].vatrate }).then(res => res.json()).then(data => {
                     console.log(data);
                 })
 
@@ -113,7 +113,7 @@ const RefVatTable = () => {
         setData(newData);
 
         data.forEach((item) => {
-            item.id === id && api.deleteRefVat({ id: item.id }).then(res => res.json()).then(data => {
+            item.id === id && api.deleteRefVatArm({ id: item.id }).then(res => res.json()).then(data => {
                 console.log(data);
             })
         })
@@ -126,7 +126,7 @@ const RefVatTable = () => {
     const success = () => {
         messageApi.open({
             type: 'success',
-            content: 'RefVat updated',
+            content: 'RefVatArm updated',
         });
     };
     const error = () => {
@@ -141,7 +141,7 @@ const RefVatTable = () => {
 
     const fetchData = () => {
         setLoading(true);
-        api.getRefVat()
+        api.getRefVatArm()
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
@@ -260,7 +260,7 @@ const RefVatTable = () => {
         const startdate = `${values.dates[0].$y}-${values.dates[0].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[0].$d.getMonth() + 1}-${values.dates[0].$D} ${values.dates[0].$H}:${values.dates[0].$m}:${values.dates[0].$s}`;
         const enddate = `${values.dates[1].$y}-${values.dates[1].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[1].$d.getMonth() + 1}-${values.dates[1].$D} ${values.dates[1].$H}:${values.dates[1].$m}:${values.dates[1].$s}`;
         setComponentDisabled(true);
-        api.createRefVat({ startdate: startdate, enddate: enddate, vatrate: values.vatrate }).then(res => res.json()).then(data => {
+        api.createRefVatArm({ startdate: startdate, enddate: enddate, vatrate: values.vatrate }).then(res => res.json()).then(data => {
             console.log(data);
             if (data === 1) {
                 setPopup(false);
@@ -293,7 +293,7 @@ const RefVatTable = () => {
                 size="middle"
                 className='table-block__button'
             >
-                Add refVat
+                Add refVatArm
             </Button>
 
             <Form form={form} component={false}>
@@ -318,7 +318,7 @@ const RefVatTable = () => {
                     }}
                 />
             </Form>
-            <Modal title="Add the refVat" open={isPopup} footer={null} closable={true} onCancel={() => setPopup(false)} >
+            <Modal title="Add the refVatArm" open={isPopup} footer={null} closable={true} onCancel={() => setPopup(false)} >
                 <Form
                     name="basic"
                     labelCol={{ span: 8 }}
@@ -360,4 +360,4 @@ const RefVatTable = () => {
     );
 }
 
-export default RefVatTable;
+export default RefVatArmTable;

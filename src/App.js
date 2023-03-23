@@ -6,6 +6,7 @@ import Header from './components/Header';
 import AuditsTable from './components/AuditsTable';
 import RefAcTable from './components/RefAcTable';
 import RefVatTable from './components/RefVatTable';
+import RefVatArmTable from './components/RefVatArmTable'
 import NotFound from './components/NotFound';
 
 function App() {
@@ -24,6 +25,10 @@ function App() {
           <Route exact path='/refVat'>
             <Header />
             <RefVatTable />
+          </Route>
+          <Route exact path='/refVatArm'>
+            <Header />
+            <RefVatArmTable />
           </Route>
           <Route>
             <NotFound />

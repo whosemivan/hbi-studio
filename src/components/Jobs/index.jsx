@@ -1,26 +1,21 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './style.css';
-import { Button, Input, Space, Table, Card, message, Tag } from 'antd';
+import { Button, Input, Space, Table, message, Tag } from 'antd';
 import Api from '../../api';
-import { SearchOutlined, ReloadOutlined, CloseOutlined } from '@ant-design/icons';
+import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 
-const AuditsTable = () => {
+const Jobs = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
-    const [auditInfo, setAuditInfo] = useState({});
-    const [isPopup, setPopup] = useState(false);
 
 
     const [messageApi, contextHolder] = message.useMessage();
 
-    let filters = [];
-    const [filterValues, setFilterValue] = useState([]);
-
     const success = () => {
         messageApi.open({
             type: 'success',
-            content: 'Audits updated',
+            content: 'Dag_run updated',
         });
     };
     const error = () => {
@@ -130,35 +125,15 @@ const AuditsTable = () => {
             ),
     });
 
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-    const day = currentDate.getDate().toString().padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
-
     const api = new Api();
 
     const fetchData = () => {
         setLoading(true);
-        api.getAudits(formattedDate)
+        api.getDagrun()
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
                     setData(data);
-
-                    let arr = [];
-                    data.forEach((audit) => {
-                        arr.push(audit.obj_group);
-                    });
-                    const unique = arr.filter((value, index, array) => array.indexOf(value) === index);
-
-                    unique.forEach((el) => {
-                        filters.push({
-                            text: el, value: el
-                        });
-                    })
-                    setFilterValue(filters)
-
                     setLoading(false);
                     success();
                 } else {
@@ -173,54 +148,48 @@ const AuditsTable = () => {
 
     const columns = [
         {
-            title: 'AuditDate',
-            dataIndex: 'auditdate',
-            key: 'auditdate',
+            title: 'dag_id',
+            dataIndex: 'dag_id',
+            key: 'dag_id',
+            ...getColumnSearchProps('dag_id'),
+            render: (_, { dag_id }) => (
+                dag_id.slice(0, 16) + '...'
+            )
+        },
+        {
+            title: 'startDate',
+            dataIndex: 'start_date',
+            key: 'start_date',
             sorter: (a, b) => {
-                return new Date(a.auditdate) - new Date(b.auditdate)
-            },
-            render: (_, { auditdate }) => (
-                auditdate.slice(0, 16)
-            )
+                return new Date(a.start_date) - new Date(b.start_date)
+            }
         },
         {
-            title: 'obj_group',
-            dataIndex: 'obj_group',
-            key: 'obj_group',
-            filters: filterValues,
-            onFilter: (value, record) => record.obj_group.indexOf(value) === 0
+            title: 'endDate',
+            dataIndex: 'end_date',
+            key: 'end_date',
+            sorter: (a, b) => {
+                return new Date(a.end_date) - new Date(b.end_date)
+            }
+        },
+
+        {
+            title: 'durationMin',
+            dataIndex: 'duration_min',
+            key: 'duration_min',
+            sorter: (a, b) => a.duration_min - b.duration_min
         },
         {
-            title: 'TableName',
-            dataIndex: 'tablename',
-            key: 'tablename',
-            ...getColumnSearchProps('tablename'),
-            render: (_, { tablename }) => (
-                tablename.slice(0, 16) + '...'
-            )
-        },
-        {
-            title: 'Source',
-            dataIndex: 'sourcerows',
-            key: 'sourcerows',
-            sorter: (a, b) => a.sourcerows - b.sourcerows
-        },
-        {
-            title: 'DWH',
-            dataIndex: 'dwhrows',
-            key: 'dwhrows',
-            sorter: (a, b) => a.dwhrows - b.dwhrows
-        },
-        {
-            title: 'Diff',
-            dataIndex: 'diffrows',
-            key: 'diffrows',
-            sorter: (a, b) => a.diffrows - b.diffrows,
-            defaultSortOrder: 'descend',
-            render: (_, { diffrows }) => (
+            title: 'state',
+            dataIndex: 'state',
+            key: 'state',
+            // sort by length of two strings with values = failed and success, temporary solution
+            sorter: (a, b) => a.state.length - b.state.length,
+            defaultSortOrder: 'ascend',
+            render: (_, { state }) => (
                 <>
                     {
-                        diffrows === 0 ? (
+                        state === 'success' ? (
                             <Tag color={'green'}>
                                 Success
                             </Tag>
@@ -232,13 +201,7 @@ const AuditsTable = () => {
                     }
                 </>
             ),
-        },
-        {
-            title: 'Cnt',
-            dataIndex: 'sameresultdayscnt',
-            key: 'sameresultdayscnt',
-            sorter: (a, b) => a.sameresultdayscnt - b.sameresultdayscnt
-        },
+        }
     ];
 
     const onChange = (pagination, filters, sorter, extra) => {
@@ -257,36 +220,13 @@ const AuditsTable = () => {
             >
                 Update audits
             </Button>
-            <Table pagination={{ pageSize: 20 }} onChange={onChange} bordered={true} loading={loading} className='table-block__table' dataSource={data} columns={columns} size="small" onRow={(record, rowIndex) => {
-                return {
-                    onClick: event => {
-                        setAuditInfo(record);
-                        setPopup(true);
-                    },
-                };
-            }} rowKey={() => {
+            <Table pagination={{ pageSize: 20 }} onChange={onChange} bordered={true} loading={loading} className='table-block__table' dataSource={data} columns={columns} size="small" rowKey={() => {
                 return Math.floor((1 + Math.random()) * 0x10000)
                     .toString(16)
                     .substring(1);
             }} />
-
-            {isPopup && (
-                <Card className='table-block__popup'>
-                    <button className='table-block__close-btn' onClick={() => {
-                        setPopup(false);
-                    }}>
-                        <CloseOutlined />
-                    </button>
-                    {
-                        Object.entries(auditInfo).map(([key, value], index) => {
-                            return (<p key={index} className='table-block__text'><span className='table-block__popup--bold'>{key}: </span>{value}</p>)
-                        })
-                    }
-                </Card>
-            )
-            }
         </div>
     );
 }
 
-export default AuditsTable;
+export default Jobs;

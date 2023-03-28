@@ -339,6 +339,7 @@ const RefAcTable = () => {
                             cell: EditableCell,
                         },
                     }}
+                    pagination={{ pageSize: 20 }} 
                     bordered
                     dataSource={data}
                     columns={mergedColumns}

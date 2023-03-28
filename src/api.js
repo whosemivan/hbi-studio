@@ -21,6 +21,10 @@ class Api {
         return fetch(`${this.url}RefVatArm`)
     }
 
+    getDagrun() {
+        return fetch(`${this.url}dag_run`)
+    }
+
     createRefAc(body) {
         return fetch(`${this.url}RefAc_ins`, {
             method: "POST",

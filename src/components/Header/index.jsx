@@ -40,6 +40,11 @@ function Header() {
                 <nav className='header__nav'>
                     <ul className='header__list'>
                         <li className='header__item'>
+                            <Link to="/jobs" className='header__link'>
+                                Jobs
+                            </Link>
+                        </li>
+                        <li className='header__item'>
                             <Link to="/" className='header__link'>
                                 Audits
                             </Link>

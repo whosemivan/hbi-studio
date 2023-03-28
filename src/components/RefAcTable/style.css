@@ -33,7 +33,3 @@
     top: 100%;
     font-size: 12px;
 }
-
-.ant-table-tbody .ant-table-row:nth-child(2n) {
-    background-color: #f0f0f0;
-}

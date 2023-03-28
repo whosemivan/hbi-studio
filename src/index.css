@@ -16,3 +16,7 @@ code {
 ul {
   list-style: none;
 }
+
+.ant-table-tbody .ant-table-row:nth-child(2n) {
+  background-color: #f0f0f0;
+}

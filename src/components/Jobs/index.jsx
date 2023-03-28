@@ -190,7 +190,7 @@ const Jobs = () => {
         },
 
         {
-            title: 'durationMin',
+            title: 'dur(min)',
             dataIndex: 'duration_min',
             key: 'duration_min',
             sorter: (a, b) => a.duration_min - b.duration_min

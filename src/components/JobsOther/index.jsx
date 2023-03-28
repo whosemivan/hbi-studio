@@ -4,9 +4,9 @@ import { Button, Input, Space, Table, message, Tag } from 'antd';
 import Api from '../../api';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import { Column } from '@ant-design/plots';
+import { Bar } from '@ant-design/plots';
 
-const Jobs = () => {
+const JobsOther = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
 
@@ -232,8 +232,8 @@ const Jobs = () => {
 
     const config = {
         data: chartValues,
-        xField: 'type',
-        yField: 'value',
+        xField: 'value',
+        yField: 'type',
         seriesField: 'state',
         color: ({ state }) => {
 
@@ -244,26 +244,10 @@ const Jobs = () => {
 
             return brandColor;
         },
-        // label: {
-        //     content: (originData) => {
-        //         const val = parseFloat(originData.value);
-
-        //         if (val < 0.05) {
-        //             return (val * 100).toFixed(1) + '%';
-        //         }
-        //     },
-        //     offset: 10,
-        // },
-        // label: {
-        //     position: "top",
-        //     offsetY: 0, // change offset to this then value will not crop as before but just overlap with chart.
-        //     formatter: ({ type }) => type.slice(0, 10) + '...'
-        //   },
         legend: {
-            layout: 'vertical',
-            position: 'right'
+            position: 'top-right',
         },
-        xAxis: false
+
     };
 
 
@@ -288,10 +272,10 @@ const Jobs = () => {
             </div>
 
             <div className='chart-block'>
-                <Column {...config} />
+                <Bar {...config} />
             </div>
         </div>
     );
 }
 
-export default Jobs;
+export default JobsOther;

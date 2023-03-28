@@ -8,6 +8,9 @@ import RefAcTable from './components/RefAcTable';
 import RefVatTable from './components/RefVatTable';
 import RefVatArmTable from './components/RefVatArmTable'
 import Jobs from './components/Jobs';
+
+import JobsOther from './components/JobsOther';
+
 import NotFound from './components/NotFound';
 
 function App() {
@@ -34,6 +37,10 @@ function App() {
           <Route exact path='/jobs'>
             <Header />
             <Jobs />
+          </Route>
+          <Route exact path='/jobsOther'>
+            <Header />
+            <JobsOther />
           </Route>
           <Route>
             <NotFound />

@@ -310,16 +310,17 @@ const RefAcTable = () => {
     return (
         <div className='table-block'>
             {contextHolder}
+
             <Button
                 type="primary"
                 onClick={() => fetchData()}
                 icon={<ReloadOutlined />}
                 size="middle"
                 className='table-block__button'
-                style={{ marginRight: 10 }}
             >
                 Update
             </Button>
+
             <Button
                 type="primary"
                 onClick={() => {
@@ -339,7 +340,7 @@ const RefAcTable = () => {
                             cell: EditableCell,
                         },
                     }}
-                    pagination={{ pageSize: 20 }} 
+                    pagination={{ defaultPageSize: 20 }}
                     bordered
                     dataSource={data}
                     columns={mergedColumns}

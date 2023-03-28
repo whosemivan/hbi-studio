@@ -4,7 +4,7 @@ import { Button, Input, Space, Table, message, Tag } from 'antd';
 import Api from '../../api';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import { Column } from '@ant-design/plots';
+import { Bar } from '@ant-design/plots';
 
 const Jobs = () => {
     const [loading, setLoading] = useState(false);
@@ -232,8 +232,8 @@ const Jobs = () => {
 
     const config = {
         data: chartValues,
-        xField: 'type',
-        yField: 'value',
+        xField: 'value',
+        yField: 'type',
         seriesField: 'state',
         color: ({ state }) => {
 
@@ -244,16 +244,10 @@ const Jobs = () => {
 
             return brandColor;
         },
-        label: {
-            position: "top",
-            offsetY: 0, // change offset to this then value will not crop as before but just overlap with chart.
-            formatter: ({ type }) => type.slice(0, 10) + '...'
-          },
         legend: {
-            layout: 'vertical',
-            position: 'right'
+            position: 'top-right',
         },
-        xAxis: false
+        yAxis: false
     };
 
 
@@ -268,9 +262,9 @@ const Jobs = () => {
                     size="middle"
                     className='table-block__button'
                 >
-                    Update audits
+                    Update
                 </Button>
-                <Table pagination={{ pageSize: 20 }} onChange={onChange} bordered={true} loading={loading} className='table-block__table' dataSource={data} columns={columns} size="small" rowKey={() => {
+                <Table pagination={{ defaultPageSize: 20 }} onChange={onChange} bordered={true} loading={loading} className='table-block__table' dataSource={data} columns={columns} size="small" rowKey={() => {
                     return Math.floor((1 + Math.random()) * 0x10000)
                         .toString(16)
                         .substring(1);
@@ -278,7 +272,7 @@ const Jobs = () => {
             </div>
 
             <div className='chart-block'>
-                <Column {...config} />
+                <Bar {...config} />
             </div>
         </div>
     );

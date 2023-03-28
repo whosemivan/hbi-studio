@@ -10,7 +10,12 @@
 
 .table-block__button {
     margin-bottom: 20px;
+    /* background-color: #00657f; */
 }
+
+/* .table-block__button:hover {
+    background-color: #026d88;
+} */
 
 .table-block__popup {
     position: absolute;

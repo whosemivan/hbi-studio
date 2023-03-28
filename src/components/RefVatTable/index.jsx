@@ -274,6 +274,7 @@ const RefVatTable = () => {
     return (
         <div className='table-block'>
             {contextHolder}
+
             <Button
                 type="primary"
                 onClick={() => fetchData()}
@@ -295,7 +296,6 @@ const RefVatTable = () => {
             >
                 Add refVat
             </Button>
-
             <Form form={form} component={false}>
                 <Table
                     components={{
@@ -303,7 +303,7 @@ const RefVatTable = () => {
                             cell: EditableCell,
                         },
                     }}
-                    pagination={{ pageSize: 20 }} 
+                    pagination={{ defaultPageSize: 20 }}
                     bordered
                     dataSource={data}
                     columns={mergedColumns}

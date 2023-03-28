@@ -248,16 +248,16 @@ const AuditsTable = () => {
     return (
         <div className='table-block'>
             {contextHolder}
-            <Button
-                type="primary"
-                onClick={() => fetchData()}
-                icon={<ReloadOutlined />}
-                size="middle"
-                className='table-block__button'
-            >
-                Update audits
-            </Button>
-            <Table pagination={{ pageSize: 20 }} onChange={onChange} bordered={true} loading={loading} className='table-block__table' dataSource={data} columns={columns} size="small" onRow={(record, rowIndex) => {
+                <Button
+                    type="primary"
+                    onClick={() => fetchData()}
+                    icon={<ReloadOutlined />}
+                    size="middle"
+                    className='table-block__button'
+                >
+                    Update audits
+                </Button>
+            <Table pagination={{ defaultPageSize: 20 }} onChange={onChange} bordered={true} loading={loading} className='table-block__table' dataSource={data} columns={columns} size="small" onRow={(record, rowIndex) => {
                 return {
                     onClick: event => {
                         setAuditInfo(record);

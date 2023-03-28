@@ -9,11 +9,11 @@
 .main .table-block {
     width: auto;
     margin: 0;
-    margin-right: 110px;
+    margin-right: 30px;
 }
 
 .main .chart-block {
-    width: 46%;
+    width: 30%;
     margin-top: 52px;
     display: flex;
     flex-direction: column;

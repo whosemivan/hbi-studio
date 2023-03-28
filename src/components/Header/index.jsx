@@ -45,11 +45,6 @@ function Header() {
                             </Link>
                         </li>
                         <li className='header__item'>
-                            <Link to="/jobsOther" className='header__link'>
-                                JobsOtherVariant
-                            </Link>
-                        </li>
-                        <li className='header__item'>
                             <Link to="/" className='header__link'>
                                 Audits
                             </Link>

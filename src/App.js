@@ -8,45 +8,47 @@ import RefAcTable from './components/RefAcTable';
 import RefVatTable from './components/RefVatTable';
 import RefVatArmTable from './components/RefVatArmTable'
 import Jobs from './components/Jobs';
-
-import JobsOther from './components/JobsOther';
-
 import NotFound from './components/NotFound';
+
+import { ConfigProvider } from 'antd';
+
 
 function App() {
   return (
     <>
-      <BrowserRouter history={browserHistory}>
-        <Switch>
-          <Route exact path='/'>
-            <Header />
-            <AuditsTable />
-          </Route>
-          <Route exact path='/refAc'>
-            <Header />
-            <RefAcTable />
-          </Route>
-          <Route exact path='/refVat'>
-            <Header />
-            <RefVatTable />
-          </Route>
-          <Route exact path='/refVatArm'>
-            <Header />
-            <RefVatArmTable />
-          </Route>
-          <Route exact path='/jobs'>
-            <Header />
-            <Jobs />
-          </Route>
-          <Route exact path='/jobsOther'>
-            <Header />
-            <JobsOther />
-          </Route>
-          <Route>
-            <NotFound />
-          </Route>
-        </Switch>
-      </BrowserRouter>
+      <ConfigProvider theme={{
+        token: {
+          colorPrimary: '#00657f',
+        },
+      }}>
+        <BrowserRouter history={browserHistory}>
+          <Switch>
+            <Route exact path='/'>
+              <Header />
+              <AuditsTable />
+            </Route>
+            <Route exact path='/refAc'>
+              <Header />
+              <RefAcTable />
+            </Route>
+            <Route exact path='/refVat'>
+              <Header />
+              <RefVatTable />
+            </Route>
+            <Route exact path='/refVatArm'>
+              <Header />
+              <RefVatArmTable />
+            </Route>
+            <Route exact path='/jobs'>
+              <Header />
+              <Jobs />
+            </Route>
+            <Route>
+              <NotFound />
+            </Route>
+          </Switch>
+        </BrowserRouter>
+      </ConfigProvider>
     </>
   );
 }

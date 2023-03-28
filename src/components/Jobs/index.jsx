@@ -244,21 +244,11 @@ const Jobs = () => {
 
             return brandColor;
         },
-        // label: {
-        //     content: (originData) => {
-        //         const val = parseFloat(originData.value);
-
-        //         if (val < 0.05) {
-        //             return (val * 100).toFixed(1) + '%';
-        //         }
-        //     },
-        //     offset: 10,
-        // },
-        // label: {
-        //     position: "top",
-        //     offsetY: 0, // change offset to this then value will not crop as before but just overlap with chart.
-        //     formatter: ({ type }) => type.slice(0, 10) + '...'
-        //   },
+        label: {
+            position: "top",
+            offsetY: 0, // change offset to this then value will not crop as before but just overlap with chart.
+            formatter: ({ type }) => type.slice(0, 10) + '...'
+          },
         legend: {
             layout: 'vertical',
             position: 'right'

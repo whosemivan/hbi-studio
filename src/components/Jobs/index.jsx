@@ -6,13 +6,14 @@ import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { Bar } from '@ant-design/plots';
 
+import TimeLine from '../TimeLine';
+
 const Jobs = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
 
     const chartData = [];
     const [chartValues, setChartValues] = useState([]);
-
 
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -145,7 +146,9 @@ const Jobs = () => {
                         chartData.push({
                             type: item.dag_id,
                             value: item.duration_min,
-                            state: item.state
+                            state: item.state,
+                            start: item.start_date,
+                            end: item.end_date
                         });
                     });
 
@@ -252,29 +255,33 @@ const Jobs = () => {
 
 
     return (
-        <div className='main'>
-            <div className='table-block'>
-                {contextHolder}
-                <Button
-                    type="primary"
-                    onClick={() => fetchData()}
-                    icon={<ReloadOutlined />}
-                    size="middle"
-                    className='table-block__button'
-                >
-                    Update
-                </Button>
-                <Table pagination={{ defaultPageSize: 20 }} onChange={onChange} bordered={true} loading={loading} className='table-block__table' dataSource={data} columns={columns} size="small" rowKey={() => {
-                    return Math.floor((1 + Math.random()) * 0x10000)
-                        .toString(16)
-                        .substring(1);
-                }} />
-            </div>
+        <>
+            <div className='main'>
+                <div className='table-block'>
+                    {contextHolder}
+                    <Button
+                        type="primary"
+                        onClick={() => fetchData()}
+                        icon={<ReloadOutlined />}
+                        size="middle"
+                        className='table-block__button'
+                    >
+                        Update
+                    </Button>
+                    <Table pagination={{ defaultPageSize: 20 }} onChange={onChange} bordered={true} loading={loading} className='table-block__table' dataSource={data} columns={columns} size="small" rowKey={() => {
+                        return Math.floor((1 + Math.random()) * 0x10000)
+                            .toString(16)
+                            .substring(1);
+                    }} />
+                </div>
 
-            <div className='chart-block'>
-                <Bar {...config} />
+                <div className='chart-block'>
+                    <Bar {...config} />
+                </div>
             </div>
-        </div>
+            
+            <TimeLine data={chartValues} />
+        </>
     );
 }
 

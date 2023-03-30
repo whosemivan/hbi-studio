@@ -248,7 +248,7 @@ const Jobs = () => {
             return brandColor;
         },
         legend: {
-            position: 'top-right',
+            position: 'bottom',
         },
         yAxis: false
     };

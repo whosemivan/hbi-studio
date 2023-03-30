@@ -6,6 +6,10 @@
     position: relative;
 }
 
+.timeline__table {
+    overflow: hidden;
+}
+
 .timeline__table,
 .timeline__td {
     border: 1px solid #dddcdc;
@@ -15,10 +19,16 @@
 
 .timeline__td {
     min-width: 33px;
-    height: 33px;
+    height: 22px;
     font-size: 14px;
     font-weight: 400;
     position: relative;
+}
+
+.timeline__th {
+    text-align: left;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 .timeline__tr:nth-child(2n) {
@@ -27,17 +37,18 @@
 
 .timeline__event {
     width: 33px;
-    height: 33px;
+    height: 22px;
     cursor: pointer;
     position: absolute;
     top: 1px;
     left: 1px;
+    z-index: 10;
 }
 
 .timeline__popup {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 1125px;
     width: 330px;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }

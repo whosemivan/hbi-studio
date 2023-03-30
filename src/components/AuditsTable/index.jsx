@@ -221,11 +221,11 @@ const AuditsTable = () => {
                 <>
                     {
                         diffrows === 0 ? (
-                            <Tag color={'green'}>
+                            <Tag color={'rgb(0, 101, 127)'}>
                                 Success
                             </Tag>
                         ) : (
-                            <Tag color={'volcano'}>
+                            <Tag color={'rgb(255, 120, 117)'}>
                                 Failed
                             </Tag>
                         )

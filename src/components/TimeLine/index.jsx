@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { Card } from 'antd';
+import { Tooltip } from 'antd';
 import './style.css';
 
 const TimeLine = ({ data }) => {
-    const [isPopup, setPopup] = useState(false);
-    const [processInfo, setProcessInfo] = useState({});
-
     const now = new Date();
     const startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, now.getHours() + 1);
 
@@ -15,26 +12,23 @@ const TimeLine = ({ data }) => {
 
     for (let i = 0; i < 24; i++) {
         const hour = new Date(startTime.getTime() + (i * 60 * 60 * 1000));
-        // console.log(hour);
         hours.push(hour.getHours());
     }
-
-    console.log(hours);
 
     return (
         <div className='timeline'>
             <table className='timeline__table'>
                 <tr className='timeline__tr'>
-                    <th className='timeline__td timeline__th'>Process title</th>
+                    <th className='timeline__td timeline__td--title timeline__th'>Process title</th>
                     {
                         hours.map((item, index) => (
-                            <th key={index} className='timeline__td'>{item}</th>
+                            <th key={index} className='timeline__td timeline__td--title'>{item}</th>
                         ))
                     }
                 </tr>
 
                 {
-                    data.map((item) => (
+                    data.sort((a, b) => new Date(a.start) - new Date(b.start)).map((item) => (
                         <tr key={item.type} className='timeline__tr'>
                             <th className='timeline__td timeline__th'>
                                 {item.type}
@@ -51,21 +45,22 @@ const TimeLine = ({ data }) => {
                                     if (currentHour === time) {
                                         return (
                                             <td key={time} className='timeline__td'>
-                                                <div className='timeline__event'
-                                                    style={{
-                                                        width: pxInOneMinute * item.value,
-                                                        left: pxInOneMinute * currentMinute,
-                                                        backgroundColor: item.state === 'failed' ? '#F4AAAA' : '#00657f'
-                                                    }}
-                                                    onMouseOver={() => {
-                                                        setPopup(true);
-                                                        setProcessInfo(item);
-                                                    }}
-                                                    onMouseOut={() => {
-                                                        setPopup(false);
-                                                        setProcessInfo({});
-                                                    }}
-                                                ></div>
+                                                <Tooltip title={
+                                                    Object.entries(item).map(([key, value], index) => {
+                                                        return (<p key={index} className='table-block__text'><span className='table-block__popup--bold'>{key}: </span>{value}</p>)
+                                                    })
+                                                } 
+                                                color={item.state === 'failed' ? '#ff7875' : '#00657f'}
+                                                placement="topLeft"
+                                                >
+                                                    <div className='timeline__event'
+                                                        style={{
+                                                            width: pxInOneMinute * item.value,
+                                                            left: pxInOneMinute * currentMinute,
+                                                            backgroundColor: item.state === 'failed' ? '#ff7875' : '#00657f'
+                                                        }}
+                                                    ></div>
+                                                </Tooltip>
                                             </td>
                                         )
                                     } else {
@@ -79,16 +74,6 @@ const TimeLine = ({ data }) => {
                     ))
                 }
             </table>
-            {isPopup && (
-                <Card className='timeline__popup'>
-                    {
-                        Object.entries(processInfo).map(([key, value], index) => {
-                            return (<p key={index} className='table-block__text'><span className='table-block__popup--bold'>{key}: </span>{value}</p>)
-                        })
-                    }
-                </Card>
-            )
-            }
         </div>
     );
 };

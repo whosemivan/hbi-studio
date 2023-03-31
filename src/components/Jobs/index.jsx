@@ -142,7 +142,6 @@ const Jobs = () => {
                     setLoading(false);
 
                     data.forEach((item) => {
-                        console.log(item);
                         chartData.push({
                             type: item.dag_id,
                             value: item.duration_min,
@@ -241,7 +240,6 @@ const Jobs = () => {
         color: ({ state }) => {
 
             if (state === 'failed') {
-                console.log(state);
                 return paletteSemanticRed;
             };
 

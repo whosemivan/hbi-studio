@@ -6,13 +6,13 @@ const TimeLine = ({ data }) => {
     const now = new Date();
     const startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, now.getHours() + 1);
 
-    console.log(startTime);
+    // const timelineDates = unique()
 
     const hours = [];
 
     for (let i = 0; i < 24; i++) {
-        const hour = new Date(startTime.getTime() + (i * 60 * 60 * 1000));
-        hours.push(hour.getHours());
+        const date = new Date(startTime.getTime() + (i * 60 * 60 * 1000));
+        hours.push({hour: date.getHours(), date: date.getDate()});
     }
 
     return (
@@ -22,7 +22,12 @@ const TimeLine = ({ data }) => {
                     <th className='timeline__td timeline__td--title timeline__th'>Process title</th>
                     {
                         hours.map((item, index) => (
-                            <th key={index} className='timeline__td timeline__td--title'>{item}</th>
+                            <th key={index} className='timeline__td timeline__td--title'>
+                                <div style={{display: 'flex', flexDirection: 'column'}}>
+                                <span>{item.hour}</span>
+                                <span className='timeline__date'>{item.date}</span>
+                                </div>
+                            </th>
                         ))
                     }
                 </tr>
@@ -36,13 +41,14 @@ const TimeLine = ({ data }) => {
                             {
                                 hours.map((time) => {
                                     const currentHour = new Date(item.start).getHours();
+                                    const currentDate = new Date(item.start).getDate();
                                     const currentMinute = new Date(item.start).getMinutes();
 
                                     const widthPx = 33;
                                     const minutes = 60;
                                     const pxInOneMinute = widthPx / minutes;
 
-                                    if (currentHour === time) {
+                                    if (currentHour === time.hour && currentDate === time.date) {
                                         return (
                                             <td key={time} className='timeline__td'>
                                                 <Tooltip title={

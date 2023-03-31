@@ -58,3 +58,8 @@
 .timeline__td--title {
     font-weight: 700;
 }
+
+.timeline__date {
+    font-size: 10px;
+    font-weight: 400;
+}

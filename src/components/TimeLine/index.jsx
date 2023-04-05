@@ -12,8 +12,18 @@ const TimeLine = ({ data }) => {
 
     for (let i = 0; i < 24; i++) {
         const date = new Date(startTime.getTime() + (i * 60 * 60 * 1000));
-        hours.push({hour: date.getHours(), date: date.getDate()});
+        hours.push({ hour: date.getHours(), date: date.getDate() });
     }
+
+    const setTagState = (state) => {
+        if (state === 'success') {
+            return '#59D16C';
+        } else if (state === 'failed') {
+            return 'rgb(255, 120, 117)';
+        } else {
+            return '#F5CD3E';
+        }
+    };
 
     return (
         <div className='timeline'>
@@ -23,9 +33,9 @@ const TimeLine = ({ data }) => {
                     {
                         hours.map((item, index) => (
                             <th key={index} className='timeline__td timeline__td--title'>
-                                <div style={{display: 'flex', flexDirection: 'column'}}>
-                                <span>{item.hour}</span>
-                                <span className='timeline__date'>{item.date}</span>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <span>{item.hour}</span>
+                                    <span className='timeline__date'>{item.date}</span>
                                 </div>
                             </th>
                         ))
@@ -49,21 +59,22 @@ const TimeLine = ({ data }) => {
                                     const pxInOneMinute = widthPx / minutes;
 
                                     if (currentHour === time.hour && currentDate === time.date) {
+                                        console.log(item.value);
                                         return (
                                             <td key={time} className='timeline__td'>
                                                 <Tooltip title={
                                                     Object.entries(item).map(([key, value], index) => {
                                                         return (<p key={index} className='table-block__text'><span className='table-block__popup--bold'>{key}: </span>{value}</p>)
                                                     })
-                                                } 
-                                                color={item.state === 'failed' ? '#ff7875' : '#00657f'}
-                                                placement="topLeft"
+                                                }
+                                                    color={setTagState(item.state)}
+                                                    placement="topLeft"
                                                 >
                                                     <div className='timeline__event'
                                                         style={{
                                                             width: pxInOneMinute * item.value,
                                                             left: pxInOneMinute * currentMinute,
-                                                            backgroundColor: item.state === 'failed' ? '#ff7875' : '#00657f'
+                                                            backgroundColor: setTagState(item.state)
                                                         }}
                                                     ></div>
                                                 </Tooltip>

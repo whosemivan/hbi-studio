@@ -164,6 +164,28 @@ const Jobs = () => {
         fetchData();
     }, []);
 
+    const setTagState = (state) => {
+        if (state === 'success') {
+            return (
+                <Tag color={'#59D16C'}>
+                    Success
+                </Tag>
+            );
+        } else if (state === 'failed') {
+            return (
+                <Tag color={'rgb(255, 120, 117)'}>
+                    Failed
+                </Tag>
+            );
+        } else {
+            return (
+                <Tag color={'#F5CD3E'}>
+                    Running
+                </Tag>
+            );
+        }
+    };
+
     const columns = [
         {
             title: 'dag_id',
@@ -207,15 +229,7 @@ const Jobs = () => {
             render: (_, { state }) => (
                 <>
                     {
-                        state === 'success' ? (
-                            <Tag color={'rgb(0, 101, 127)'}>
-                                Success
-                            </Tag>
-                        ) : (
-                            <Tag color={'rgb(255, 120, 117)'}>
-                                Failed
-                            </Tag>
-                        )
+                       setTagState(state)
                     }
                 </>
             ),
@@ -230,7 +244,8 @@ const Jobs = () => {
     // Chart
 
     const paletteSemanticRed = '#ff7875';
-    const brandColor = '#00657f';
+    const brandColor = '#59D16C';
+    const runningColor = '#F5CD3E';
 
     const config = {
         data: chartValues,
@@ -241,6 +256,10 @@ const Jobs = () => {
 
             if (state === 'failed') {
                 return paletteSemanticRed;
+            };
+
+            if (state === 'running') {
+                return runningColor;
             };
 
             return brandColor;
@@ -277,7 +296,7 @@ const Jobs = () => {
                     <Bar {...config} />
                 </div>
             </div>
-            
+
             <TimeLine data={chartValues} />
         </>
     );

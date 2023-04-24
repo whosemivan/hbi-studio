@@ -43,7 +43,7 @@ const EditableCell = ({
 
 
 
-const RefAcTable = () => {
+const RefAcTable = ({isAuth}) => {
     // state of requests
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
@@ -67,6 +67,8 @@ const RefAcTable = () => {
     const [isPopup, setPopup] = useState(false);
 
     const { RangePicker } = DatePicker;
+
+    console.log(isAuth);
 
 
     const edit = (record) => {
@@ -97,7 +99,7 @@ const RefAcTable = () => {
                     ...row,
                 });
 
-                api.editRefAc({ id: newData[index].id, bk_sourcemediumcode: newData[index].bk_sourcemediumcode, startdate: newData[index].startdate, enddate: newData[index].enddate, acrate: newData[index].acrate }).then(res => res.json()).then(data => {
+                api.editRefAc({ id: newData[index].id, bk_sourcemediumcode: newData[index].bk_sourcemediumcode, startdate: newData[index].startdate, enddate: newData[index].enddate, acrate: newData[index].acrate }, isAuth).then(res => res.json()).then(data => {
                     console.log(data);
                 })
 
@@ -120,7 +122,7 @@ const RefAcTable = () => {
         setData(newData);
 
         data.forEach((item) => {
-            item.id === id && api.deleteRefAc({ id: item.id }).then(res => res.json()).then(data => {
+            item.id === id && api.deleteRefAc({ id: item.id }, isAuth).then(res => res.json()).then(data => {
                 console.log(data);
             })
         })
@@ -252,11 +254,11 @@ const RefAcTable = () => {
                             color: '#000000',
                             textDecoration: 'underline',
                             marginRight: 8
-                        }} disabled={editingId !== ''} onClick={() => edit(record)}>
+                        }} disabled={editingId !== '' || isAuth ? false : true} onClick={() => edit(record)}>
                             Edit
                         </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
-                            <a style={{
+                        <Popconfirm disabled={isAuth ? false : true} title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
+                            <a disabled={isAuth ? false : true} style={{
                                 color: '#000000',
                                 textDecoration: 'underline'
                             }} >Delete</a>
@@ -296,7 +298,7 @@ const RefAcTable = () => {
         const startdate = `${values.dates[0].$y}-${values.dates[0].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[0].$d.getMonth() + 1}-${values.dates[0].$D} ${values.dates[0].$H}:${values.dates[0].$m}:${values.dates[0].$s}`;
         const enddate = `${values.dates[1].$y}-${values.dates[1].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[1].$d.getMonth() + 1}-${values.dates[1].$D} ${values.dates[1].$H}:${values.dates[1].$m}:${values.dates[1].$s}`;
         setComponentDisabled(true);
-        api.createRefAc({ bk_sourcemediumcode: values.bk_sourcemediumcode, startdate: startdate, enddate: enddate, acrate: values.acrate }).then(res => res.json()).then(data => {
+        api.createRefAc({ bk_sourcemediumcode: values.bk_sourcemediumcode, startdate: startdate, enddate: enddate, acrate: values.acrate }, isAuth).then(res => res.json()).then(data => {
             console.log(data);
             if (data === 1) {
                 setPopup(false);
@@ -329,6 +331,7 @@ const RefAcTable = () => {
                 icon={<PlusCircleOutlined />}
                 size="middle"
                 className='table-block__button'
+                disabled={isAuth ? false : true}
             >
                 Add refAc
             </Button>

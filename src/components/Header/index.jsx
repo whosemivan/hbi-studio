@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './style.css';
-import { Dropdown, Space } from 'antd';
+import { Dropdown, Space, Button } from 'antd';
 
 const items = [
     {
@@ -30,7 +30,8 @@ const items = [
     }
 ];
 
-function Header() {
+function Header({isAuth, setAuth}) {
+    console.log(isAuth);
     return (
         <header className='header'>
             <div className='header__wrapper'>
@@ -56,11 +57,28 @@ function Header() {
                                 }}
                             >
                                 <a className='header__link' onClick={(e) => e.preventDefault()}>
-                                    <Space style={{fontSize: 18, cursor: 'pointer'}}>
+                                    <Space style={{ fontSize: 18, cursor: 'pointer' }}>
                                         References
                                     </Space>
                                 </a>
                             </Dropdown>
+                        </li>
+                        <li className='header__item'>
+                            {
+                                isAuth ? (
+                                    <Button 
+                                    style={{backgroundColor: '#ffffff', color: '#00657f'}}
+                                    onClick={() => {
+                                        localStorage.removeItem('accessToken');
+                                        setAuth('');
+                                    }}
+                                    type="primary">Logout</Button>
+                                ) : (
+                                    <Link to="/" className='header__link'>
+                                        Auth
+                                    </Link>
+                                )
+                            }
                         </li>
                     </ul>
                 </nav>

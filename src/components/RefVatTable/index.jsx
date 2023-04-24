@@ -42,7 +42,7 @@ const EditableCell = ({
 
 
 
-const RefVatTable = () => {
+const RefVatTable = ({isAuth}) => {
     // state of requests
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
@@ -90,7 +90,7 @@ const RefVatTable = () => {
                     ...row,
                 });
 
-                api.editRefVat({ id: newData[index].id, startdate: newData[index].startdate, enddate: newData[index].enddate, vatrate: newData[index].vatrate }).then(res => res.json()).then(data => {
+                api.editRefVat({ id: newData[index].id, startdate: newData[index].startdate, enddate: newData[index].enddate, vatrate: newData[index].vatrate }, isAuth).then(res => res.json()).then(data => {
                     console.log(data);
                 })
 
@@ -113,7 +113,7 @@ const RefVatTable = () => {
         setData(newData);
 
         data.forEach((item) => {
-            item.id === id && api.deleteRefVat({ id: item.id }).then(res => res.json()).then(data => {
+            item.id === id && api.deleteRefVat({ id: item.id }, isAuth).then(res => res.json()).then(data => {
                 console.log(data);
             })
         })
@@ -216,11 +216,11 @@ const RefVatTable = () => {
                             color: '#000000',
                             textDecoration: 'underline',
                             marginRight: 8
-                        }} disabled={editingId !== ''} onClick={() => edit(record)}>
+                        }} disabled={editingId !== '' || isAuth ? false : true} onClick={() => edit(record)}>
                             Edit
                         </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
-                            <a style={{
+                        <Popconfirm disabled={isAuth ? false : true} title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
+                            <a disabled={isAuth ? false : true} style={{
                                 color: '#000000',
                                 textDecoration: 'underline'
                             }} >Delete</a>
@@ -260,7 +260,7 @@ const RefVatTable = () => {
         const startdate = `${values.dates[0].$y}-${values.dates[0].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[0].$d.getMonth() + 1}-${values.dates[0].$D} ${values.dates[0].$H}:${values.dates[0].$m}:${values.dates[0].$s}`;
         const enddate = `${values.dates[1].$y}-${values.dates[1].$d.getMonth().toString().length > 1 ? '' : '0'}${values.dates[1].$d.getMonth() + 1}-${values.dates[1].$D} ${values.dates[1].$H}:${values.dates[1].$m}:${values.dates[1].$s}`;
         setComponentDisabled(true);
-        api.createRefVat({ startdate: startdate, enddate: enddate, vatrate: values.vatrate }).then(res => res.json()).then(data => {
+        api.createRefVat({ startdate: startdate, enddate: enddate, vatrate: values.vatrate }, isAuth).then(res => res.json()).then(data => {
             console.log(data);
             if (data === 1) {
                 setPopup(false);
@@ -293,6 +293,7 @@ const RefVatTable = () => {
                 icon={<PlusCircleOutlined />}
                 size="middle"
                 className='table-block__button'
+                disabled={isAuth ? false : true}
             >
                 Add refVat
             </Button>

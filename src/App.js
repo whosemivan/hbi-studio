@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Switch, Route, Router as BrowserRouter } from 'react-router-dom';
 import browserHistory from "./browser-history";
+
+import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
 
 import Header from './components/Header';
 import AuditsTable from './components/AuditsTable';
@@ -14,6 +17,8 @@ import { ConfigProvider } from 'antd';
 
 
 function App() {
+  const [isAuth, setAuth] = useState(localStorage.getItem("accessToken"));
+
   return (
     <>
       <ConfigProvider theme={{
@@ -24,23 +29,29 @@ function App() {
         <BrowserRouter history={browserHistory}>
           <Switch>
             <Route exact path='/'>
-              <Header />
+              <SignIn isAuth={isAuth} setAuth={setAuth} />
+            </Route>
+            <Route exact path='/signup'>
+              <SignUp isAuth={isAuth} setAuth={setAuth} />
+            </Route>
+            <Route exact path='/audits'>
+              <Header isAuth={isAuth} setAuth={setAuth} />
               <AuditsTable />
             </Route>
             <Route exact path='/refAc'>
-              <Header />
-              <RefAcTable />
+              <Header isAuth={isAuth} setAuth={setAuth} />
+              <RefAcTable isAuth={isAuth} />
             </Route>
             <Route exact path='/refVat'>
-              <Header />
-              <RefVatTable />
+              <Header isAuth={isAuth} setAuth={setAuth} />
+              <RefVatTable isAuth={isAuth}  />
             </Route>
             <Route exact path='/refVatArm'>
-              <Header />
-              <RefVatArmTable />
+              <Header isAuth={isAuth} setAuth={setAuth} />
+              <RefVatArmTable isAuth={isAuth}  />
             </Route>
             <Route exact path='/jobs'>
-              <Header />
+              <Header isAuth={isAuth} setAuth={setAuth} />
               <Jobs />
             </Route>
             <Route>

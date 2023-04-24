@@ -17,13 +17,33 @@ const TimeLine = ({ data }) => {
 
     const setTagState = (state) => {
         if (state === 'success') {
-            return '#59D16C';
+            return '#1D8C00';
         } else if (state === 'failed') {
             return 'rgb(255, 120, 117)';
         } else {
             return '#F5CD3E';
         }
     };
+
+
+    console.log(data);
+    const newArr = [];
+
+    data.forEach((el) => {
+        const uniqArr = [];
+
+        data.forEach((j) => {
+            return el.type === j.type ? uniqArr.push(j) : '';
+        });
+
+        newArr.push(uniqArr);
+    });
+
+    let set = new Set(newArr.map(JSON.stringify));
+    let resultArr = Array.from(set).map(JSON.parse);
+
+    console.log(resultArr);
+    console.log(hours);
 
     return (
         <div className='timeline'>
@@ -43,52 +63,55 @@ const TimeLine = ({ data }) => {
                 </tr>
 
                 {
-                    data.sort((a, b) => new Date(a.start) - new Date(b.start)).map((item) => (
-                        <tr key={item.type} className='timeline__tr'>
-                            <th className='timeline__td timeline__th'>
-                                {item.type}
-                            </th>
-                            {
-                                hours.map((time) => {
-                                    const currentHour = new Date(item.start).getHours();
-                                    const currentDate = new Date(item.start).getDate();
-                                    const currentMinute = new Date(item.start).getMinutes();
+                    resultArr.map((arr) => {
+                        return (
+                            <tr>
+                                <th className='timeline__td timeline__th'>
+                                    {arr[0].type}
+                                </th>
 
-                                    const widthPx = 33;
-                                    const minutes = 60;
-                                    const pxInOneMinute = widthPx / minutes;
+                                {
+                                    hours.map((time) => {
+                                        return <td key={time} className='timeline__td'>
+                                            {
+                                                arr.map((el) => {
 
-                                    if (currentHour === time.hour && currentDate === time.date) {
-                                        console.log(item.value);
-                                        return (
-                                            <td key={time} className='timeline__td'>
-                                                <Tooltip title={
-                                                    Object.entries(item).map(([key, value], index) => {
-                                                        return (<p key={index} className='table-block__text'><span className='table-block__popup--bold'>{key}: </span>{value}</p>)
-                                                    })
-                                                }
-                                                    color={setTagState(item.state)}
-                                                    placement="topLeft"
-                                                >
-                                                    <div className='timeline__event'
-                                                        style={{
-                                                            width: pxInOneMinute * item.value,
-                                                            left: pxInOneMinute * currentMinute,
-                                                            backgroundColor: setTagState(item.state)
-                                                        }}
-                                                    ></div>
-                                                </Tooltip>
-                                            </td>
-                                        )
-                                    } else {
-                                        return <td key={time} className='timeline__td'>&nbsp;</td>
-                                    }
+                                                    const currentHour = new Date(el.start).getHours();
+                                                    const currentDate = new Date(el.start).getDate();
+                                                    const currentMinute = new Date(el.start).getMinutes();
 
-                                })
-                            }
+                                                    const widthPx = 33;
+                                                    const minutes = 60;
+                                                    const pxInOneMinute = widthPx / minutes;
 
-                        </tr>
-                    ))
+                                                    if (currentHour === time.hour && currentDate === time.date) {
+                                                        return (
+                                                            <Tooltip title={
+                                                                Object.entries(el).map(([key, value], index) => {
+                                                                    return (<p key={index} className='table-block__text'><span className='table-block__popup--bold'>{key}: </span>{value}</p>)
+                                                                })
+                                                            }
+                                                                color={setTagState(el.state)}
+                                                                placement="topLeft"
+                                                            >
+                                                                <div className='timeline__event'
+                                                                    style={{
+                                                                        width: pxInOneMinute * el.value,
+                                                                        left: pxInOneMinute * currentMinute,
+                                                                        backgroundColor: setTagState(el.state)
+                                                                    }}
+                                                                ></div>
+                                                            </Tooltip>
+                                                        )
+                                                    }
+                                                })
+                                            }
+                                        </td>
+                                    })
+                                }
+                            </tr>
+                        )
+                    })
                 }
             </table>
         </div>

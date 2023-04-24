@@ -167,7 +167,7 @@ const Jobs = () => {
     const setTagState = (state) => {
         if (state === 'success') {
             return (
-                <Tag color={'#59D16C'}>
+                <Tag color={'#1D8C00'}>
                     Success
                 </Tag>
             );
@@ -244,7 +244,7 @@ const Jobs = () => {
     // Chart
 
     const paletteSemanticRed = '#ff7875';
-    const brandColor = '#59D16C';
+    const brandColor = '#1D8C00';
     const runningColor = '#F5CD3E';
 
     const config = {
